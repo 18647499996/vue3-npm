@@ -2,8 +2,8 @@
   <div>
     <a-row style="line-height:30px; padding:  16px 16px; text-align: center;  font-size: 14px;">
       <a-col>
-        <img :width="30" src="../assets/favicon.png" />
-        <span style="font-size: 16px; font-weight: 600; margin-left: 8px; color: #333;">Bemi API</span>
+        <img :width="30" src="../assets/favicon.png" @click="onClick()" />
+        <span class="span-title" @click="onClick()">Bemi API</span>
       </a-col>
     </a-row>
     <a-menu v-model:selectedKeys="selectedKeys" :open-keys="openKeys" theme="light" mode="inline" :items="items"
@@ -78,12 +78,26 @@ export default {
         this.openKeys = latestOpenKey ? [latestOpenKey] : [];
       }
     },
+
     onClickMenu(e) {
       this.$router.push(e.item.path)
     },
+
+    onClick() {
+      this.$router.push('/index')
+      this.onOpenChange(['index'])
+      this.selectedKeys = ['data']
+    }
   }
 }
 </script>
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
-<style scoped></style>
+<style scoped>
+.span-title {
+  font-size: 16px;
+  font-weight: 600;
+  margin-left: 8px;
+  color: #333;
+}
+</style>

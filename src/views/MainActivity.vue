@@ -4,7 +4,7 @@
             <SiderMenuComponents></SiderMenuComponents>
         </a-layout-sider>
         <a-layout>
-            <a-layout-header style="background: #fff; padding: 0px;">
+            <a-layout-header style="background: #fff; padding: 0px; height: 68px;">
                 <HeaderTitleComponents :collapsed="collapsed" @onCollapsed="onCollapsed"></HeaderTitleComponents>
             </a-layout-header>
             <a-layout-content class="layout-content"
