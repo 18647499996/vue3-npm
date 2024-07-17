@@ -19,14 +19,12 @@
 </template>
 
 <script>
-import { reactive, watch, h } from 'vue';
-import { HomeOutlined, VideoCameraOutlined, UploadOutlined, MenuFoldOutlined, MenuUnfoldOutlined } from '@ant-design/icons-vue';
 import HeaderTitleComponents from '@/components/HeaderTitleComponents.vue';
 import SiderMenuComponents from '@/components/SiderMenuComponents.vue';
 
 export default {
     name: 'HomeActivity',
-    components: { VideoCameraOutlined, UploadOutlined, HeaderTitleComponents, SiderMenuComponents },
+    components: {HeaderTitleComponents, SiderMenuComponents },
     data() {
         return {
             collapsed: false,
