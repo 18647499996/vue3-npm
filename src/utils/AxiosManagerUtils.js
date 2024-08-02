@@ -82,7 +82,7 @@ export function download(hasDownload) {
 }
 
 /**
- * todo 文件下载回调监听
+ * todo 文件回调监听（ 下载 ）
  * @param {*} listener 
  * @returns 
  */
@@ -96,7 +96,7 @@ export function downloadProgressListener(listener) {
 }
 
 /**
- * todo 文件上传回调监听
+ * todo 文件回调监听（ 上传 ）
  * @param {*} listener 
  * @returns 
  */
