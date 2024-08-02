@@ -25,7 +25,11 @@ const config = {
   // 是否显示加载框,
   loading: false,
   // 是否自动导出文件
-  download: false
+  download: false,
+  // 文件下载回调方法
+  onDownloadProgress: null,
+  // 文件上传回调方法
+  onUploadProgress: null
 }
 
 let axiosManager
@@ -63,8 +67,8 @@ export function baseApi(httpUrl) {
  * todo 是否显示加载框
  * @param isLoading
  */
-export function isLoading(isLoading) {
-  axiosManager.defaults.loading = isLoading
+export function loading(hasLoading) {
+  axiosManager.defaults.loading = hasLoading
   return this
 }
 
@@ -72,8 +76,36 @@ export function isLoading(isLoading) {
  * todo 是否自动导出文件
  * @param isDownload
  */
-export function isDownload(isDownload) {
-  axiosManager.defaults.download = isDownload
+export function download(hasDownload) {
+  axiosManager.defaults.download = hasDownload
+  return this
+}
+
+/**
+ * todo 文件下载回调监听
+ * @param {*} listener 
+ * @returns 
+ */
+export function downloadProgressListener(listener) {
+  axiosManager.defaults.onDownloadProgress = (succeed => {
+    const progress = Math.round((succeed.loaded * 100) / succeed.total);
+    succeed.progress = progress
+    listener(succeed)
+  })
+  return this
+}
+
+/**
+ * todo 文件上传回调监听
+ * @param {*} listener 
+ * @returns 
+ */
+export function uploadProgressListener(listener) {
+  axiosManager.defaults.onUploadProgress = (succeed => {
+    const progress = Math.round((succeed.loaded * 100) / succeed.total);
+    succeed.progress = progress
+    listener(succeed)
+  })
   return this
 }
 
@@ -84,6 +116,17 @@ export function isDownload(isDownload) {
  */
 export function xls(fileName) {
   axiosManager.defaults.mimeType = 'application/vnd.ms-excel'
+  axiosManager.defaults.fileName = fileName
+  return this
+}
+
+/**
+ * todo 视频格式
+ * @param fileName
+ * @return {xls}
+ */
+export function video(fileName) {
+  axiosManager.defaults.mimeType = 'video/mp4'
   axiosManager.defaults.fileName = fileName
   return this
 }
@@ -148,7 +191,7 @@ export function addParamsInterceptors(paramsListener) {
 /**
  * todo codeStatus拦截器
  */
-export function addCodeInterceptors(codeStatusListener,errorStatusListener) {
+export function addCodeInterceptors(codeStatusListener, errorStatusListener) {
   axiosManager.interceptors.response.use(config => {
     return codeStatusListener(config)
   }, error => {
@@ -166,6 +209,8 @@ export function addBlobInterceptors() {
     switch (config['config']['mimeType']) {
       case 'application/vnd.ms-excel':
         return getXls(config)
+      case 'video/mp4':
+        return getVideo(config)
       default:
         return getXls(config)
     }
@@ -185,6 +230,21 @@ export function getXls(config) {
     let link = document.createElement('a')
     link.href = window.URL.createObjectURL(blob)
     link.download = config['config']['fileName'] === undefined || '' === config['config']['fileName'] ? new Date().getTime() + '.xls' : config['config']['fileName'] + '.xls'
+    link.click()
+  }
+  return blob
+}
+
+/**
+ * 获取video下载blob
+ * @param config
+ */
+export function getVideo(config) {
+  let blob = new Blob([config.data], { type: 'video/mp4' })
+  if (config['config']['download']) {
+    let link = document.createElement('a')
+    link.href = window.URL.createObjectURL(blob)
+    link.download = config['config']['fileName'] === undefined || '' === config['config']['fileName'] ? new Date().getTime() + '.mp4' : config['config']['fileName'] + '.mp4'
     link.click()
   }
   return blob
@@ -279,9 +339,12 @@ export default {
   createBlobAxiosServer,
   baseApi,
   addHeaders,
-  isLoading,
-  isDownload,
+  loading,
+  download,
+  downloadProgressListener,
+  uploadProgressListener,
   xls,
+  video,
   transformSchedulers,
   addLogcatInterceptors,
   addParamsInterceptors,

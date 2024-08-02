@@ -10,6 +10,7 @@ import DeviceManagerUtils from './DeviceManagerUtils'
 import AxiosManagerUtils from './AxiosManagerUtils'
 import StorageManagerUtils from './StorageManagerUtils'
 import EventBusManagerUtils from './EventBusManagerUtils'
+import LocationManagerUtils from './LocationManagerUtils'
 
 export default {
   NotificationManagerUtils,
@@ -17,4 +18,5 @@ export default {
   AxiosManagerUtils,
   StorageManagerUtils,
   EventBusManagerUtils,
+  LocationManagerUtils
 }

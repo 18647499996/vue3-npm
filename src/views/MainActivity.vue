@@ -21,17 +21,37 @@
 <script>
 import HeaderTitleComponents from '@/components/HeaderTitleComponents.vue';
 import SiderMenuComponents from '@/components/SiderMenuComponents.vue';
+import http from '@/utils/AxiosManagerUtils.js';
+import LocationManagerUtils from '@/utils/LocationManagerUtils';
 
 export default {
     name: 'HomeActivity',
-    components: {HeaderTitleComponents, SiderMenuComponents },
+    components: { HeaderTitleComponents, SiderMenuComponents },
     data() {
         return {
             collapsed: false,
         }
     },
     created() {
+        http.createBlobAxiosServer()
+            .baseApi('http://vd3.bdstatic.com/')
+            .addBlobInterceptors()
+            .video('axios视频下载')
+            .downloadProgressListener(listener => {
+                console.log('~~~~~~~下载进度~~~~', listener)
+            })
+            .get('mda-qgu9r9c2v50anmm2/360p/h264/1722236069205668984/mda-qgu9r9c2v50anmm2.mp4')
+            .then(succeed => {
+                console.log('下载成功', succeed)
+            })
+            .catch(error => {
 
+            })
+        LocationManagerUtils.locationOption.mapKey = 'c2868746f6d0d525fc35b1f377e683c2';
+        LocationManagerUtils.locationOption.mapSecurityCode = '6a5a69a56b383204455176e1c99c1f75';
+        LocationManagerUtils.getCurrentCityLocation(succeed => {
+            console.log('~~~~~~~~~~~~~~', succeed)
+        })
     },
 
     methods: {
