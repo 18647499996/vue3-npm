@@ -21,7 +21,7 @@ const locationOption = {
  * @param plugins
  * @return {Promise<any>}
  */
-export function loadMap(plugins = []) {
+function loadMap(plugins = []) {
   window._AMapSecurityConfig = {
     securityJsCode: locationOption.mapSecurityCode
   }
@@ -30,6 +30,9 @@ export function loadMap(plugins = []) {
     'version': '2.0',
     'plugins': plugins
   })
+}
+function getMap(container, option) {
+  return new AMap.Map(container, option);
 }
 
 /**
@@ -75,7 +78,7 @@ function getCurrentCityLocation(currentCityLocationListener) {
  * @param lat
  * @param geocoderListener
  */
-export function getGeocoder(city, lng, lat, geocoderListener) {
+function getGeocoder(city, lng, lat, geocoderListener) {
   const pos = [lng, lat]
   loadMap(['AMap.Geocoder'])
     .then(function () {
@@ -99,7 +102,7 @@ export function getGeocoder(city, lng, lat, geocoderListener) {
  * @param city
  * @param weatherLiveListener
  */
-export function getWeatherLive(city, weatherLiveListener) {
+function getWeatherLive(city, weatherLiveListener) {
   //加载天气查询插件
   loadMap(['AMap.Weather'])
     .then(function () {
@@ -117,7 +120,7 @@ export function getWeatherLive(city, weatherLiveListener) {
  * @param city
  * @param weatherForecastListener
  */
-export function getWeatherForecast(city, weatherForecastListener) {
+function getWeatherForecast(city, weatherForecastListener) {
   loadMap(['AMap.Weather'])
     .then(function () {
       // 创建天气查询实例
@@ -155,7 +158,7 @@ export function getWeatherForecast(city, weatherForecastListener) {
  *
  * @param searchListener
  */
-export function getPoiSearch(searchOption, searchListener) {
+function getPoiSearch(searchOption, searchListener) {
   loadMap(['AMap.PlaceSearch'])
     .then(function () {
       new AMap.PlaceSearch(searchOption)
@@ -178,7 +181,7 @@ export function getPoiSearch(searchOption, searchListener) {
  * @param {*} drivingSearchListener 路线结果回调
  *                          
  */
-export function getDrivingSearch(container, startLat, startLng, endLat, endLng, mapOption, drivingOption, waypoints, drivingSearchListener) {
+function getDrivingSearch(container, startLat, startLng, endLat, endLng, mapOption, drivingOption, waypoints, drivingSearchListener) {
   loadMap(['AMap.Driving'])
     .then(function () {
       var map = getMap(container, mapOption);
@@ -225,23 +228,35 @@ export function getDrivingSearch(container, startLat, startLng, endLat, endLng, 
     })
 }
 
-export function getMap(container, option) {
-  return new AMap.Map(container, option);
-}
 
-export function addMap(container, option, mapListener) {
+/**
+ * 渲染地图组件
+ * @param {*} container 
+ * @param {*} option 
+ * @param {*} mapListener 
+ */
+function renderMap(container, mapListener, option = {}) {
   loadMap()
     .then(succeed => {
-      var map = getMap(container, option);
-      var marker = new AMap.Marker({
-        map: map,
-        icon: "//a.amap.com/jsapi_demos/static/demo-center/icons/poi-marker-red.png",
-        position: option.center,
-        offset: new AMap.Pixel(-13, -30)
-      });
-      map.add(marker);
+      var map = getMap(container, option = {} ? {
+        viewMode: '2D', //默认使用 2D 模式
+        zoom: 14, //地图级别
+      } : option);
       mapListener(map);
     })
+}
+
+/**
+ * 添加覆盖物坐标点
+ * @param {array} postion 坐标点 [116.49, 39.9]
+ * @param {*} icon 覆盖物图标 默认：https://webapi.amap.com/theme/v1.3/markers/n/mark_r.png
+ * @returns 
+ */
+function appendMarker(postion = [], icon = 'https://webapi.amap.com/theme/v1.3/markers/n/mark_r.png') {
+  return new AMap.Marker({
+    icon: icon,
+    position: postion,
+  });
 }
 
 export default {
@@ -252,5 +267,6 @@ export default {
   getWeatherForecast,
   getPoiSearch,
   getDrivingSearch,
-  addMap
+  renderMap,
+  appendMarker
 }
