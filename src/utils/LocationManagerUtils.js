@@ -180,7 +180,20 @@ function findPoiSearchByLatitude(lat, lng, searchListener, options = {}) {
     .then(function () {
       var PlaceSearch = new AMap.PlaceSearch(options)
       PlaceSearch.searchNearBy('', [lng, lat], 300, function (status, result) {
-        searchListener(result)
+        console.log('系统', status)
+        if (status == 'complete') {
+          searchListener(result)
+        } else {
+          searchListener({
+            info: 'no_data',
+            poiList: {
+              pois: [],
+              count: 0,
+              pageIndex: 1,
+              pageSize: 10
+            }
+          })
+        }
       })
     })
 }

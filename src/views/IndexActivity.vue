@@ -22,6 +22,8 @@ export default {
 
     mounted() {
         LocationManagerUtils.renderMap('container', map => {
+            this.mapview = map;
+            map.on('moveend', this.handleMoveendChange);
             LocationManagerUtils.appendScaleControl(map);
             LocationManagerUtils.findPoiSearchByLatitude(map.getCenter().lat, map.getCenter().lng, listener => {
                 console.log('~~~~~~~~~', listener)
@@ -30,7 +32,11 @@ export default {
     },
 
     methods: {
-
+        handleMoveendChange() {
+            LocationManagerUtils.findPoiSearchByLatitude(this.mapview.getCenter().lat, this.mapview.getCenter().lng, listener => {
+                console.log('~~~~~~~~~', listener)
+            })
+        }
     }
 
 }
