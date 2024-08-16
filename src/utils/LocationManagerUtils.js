@@ -133,42 +133,6 @@ function getWeatherForecast(city, weatherForecastListener) {
 }
 
 /**
- * todo 周边搜索（ 关键字 ）
- * @param searchOption
- *        city:''                 兴趣点城市 可选值：城市名（中文或中文全拼）、citycode、adcode默认值：“全国”
- *        citylimit:''            是否强制限制在设置的城市内搜索，默认值为：false true：强制限制设定城市，false：不强制限制设定城市
- *        children:''             是否按照层级展示子POI数据,默认0 children=1，展示子节点POI数据，children=0，不展示子节点数据
- *        type:''                 兴趣点类别，多个类别用“|”分割，如“餐饮|酒店|电影院”
- *                                POI搜索类型共分为以下20种：
- *                                汽车服务|汽车销售|汽车维修|摩托车服务|餐饮服务|购物服务|生活服务|体育休闲服务|
- *                                医疗保健服务|住宿服务|风景名胜|商务住宅|政府机构及社会团体|科教文化服务|
- *                                交通设施服务|金融保险服务|公司企业|道路附属设施|地名地址信息|公共设施
- *                                默认值：餐饮服务、商务住宅、生活服务
- *        lang:''                 检索语言类型 可选值：zh_cn：中文简体，en：英文 默认为: zh_cn：中文简体
- *        pageSize:''             单页显示结果条数 默认值：10 取值范围：1-50，超出取值范围按最大值返回
- *        pageIndex:''            页码。（如pageIndex为2，pageSize为10，那么显示的应是第11-20条返回结果）默认值：1 取值范围：1-100，超过实际页数不返回poi
- *        extensions:''           此项默认值：base，返回基本地址信息 取值：all，返回基本+详细信息
- *        map:''                  AMap.Map对象, 展现结果的地图实例。当指定此参数后，搜索结果的标注、线路等均会自动添加到此地图上。可选值
- *        panel:''                结果列表的HTML容器id或容器元素，提供此参数后，结果列表将在此容器中进行展示。可选值
- *        showCover:''            在使用map属性时，是否在地图上显示周边搜索的圆或者范围搜索的多边形，默认为true
- *        renderStyle:''          如使用了map或panel属性，renderStyle可以用来设定绘制的UI风格，缺省为'newpc'
- *                                可选值:'newpc'或'default'，'newpc'为带图片展示的新样式，'default'为原有简单样式。
- *        autoFitView:''          用于控制在搜索结束后，是否自动调整地图视野使绘制的Marker点都处于视口的可见范围
- *        keyword:''              关键字
- *
- * @param searchListener
- */
-function getPoiSearch(searchOption, searchListener) {
-  loadMap(['AMap.PlaceSearch'])
-    .then(function () {
-      new AMap.PlaceSearch(searchOption)
-        .search(searchOption.keyword, function (status, result) {
-          searchListener(result)
-        })
-    })
-}
-
-/**
  * 根据经纬度查询周边信息
  * @param {*} lat 纬度
  * @param {*} lng 经度
@@ -180,7 +144,6 @@ function findPoiSearchByLatitude(lat, lng, searchListener, options = {}) {
     .then(function () {
       var PlaceSearch = new AMap.PlaceSearch(options)
       PlaceSearch.searchNearBy('', [lng, lat], 300, function (status, result) {
-        console.log('系统', status)
         if (status == 'complete') {
           searchListener(result)
         } else {
@@ -298,16 +261,46 @@ function appendScaleControl(map) {
     });
 }
 
+/**
+ * 地图事件（ 移动结束 ）
+ * @param {*} map 
+ * @param {*} fun 
+ */
+function appendMoveend(map, fun) {
+  map.on('moveend', fun);
+}
+
+/**
+ * 地图事件（ 移动中 ）
+ * @param {*} map 
+ * @param {*} fun 
+ */
+function appendMove(map, fun) {
+  map.on('mapmove', fun)
+}
+
+/**
+ * 地图事件（ 移动准备 ）
+ * @param {*} map 
+ * @param {*} fun 
+ */
+function appendStart(map, fun) {
+  map.on('movestart', fun)
+}
+
+
 export default {
   locationOption,
   getCurrentCityLocation,
   getCurrentLocation,
   getWeatherLive,
   getWeatherForecast,
-  getPoiSearch,
   getDrivingSearch,
   renderMap,
   appendMarker,
   appendScaleControl,
+  appendMoveend,
+  appendMove,
+  appendStart,
   findPoiSearchByLatitude
 }
