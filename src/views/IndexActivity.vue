@@ -22,8 +22,10 @@ export default {
 
     mounted() {
         LocationManagerUtils.renderMap('container', map => {
-            console.log('~~~~~~~~',map);
-            map.add(LocationManagerUtils.appendMarker([116.49, 39.9]))
+            LocationManagerUtils.appendScaleControl(map);
+            LocationManagerUtils.findPoiSearchByLatitude(map.getCenter().lat, map.getCenter().lng, listener => {
+                console.log('~~~~~~~~~', listener)
+            })
         })
     },
 

@@ -169,6 +169,23 @@ function getPoiSearch(searchOption, searchListener) {
 }
 
 /**
+ * 根据经纬度查询周边信息
+ * @param {*} lat 纬度
+ * @param {*} lng 经度
+ * @param {*} searchListener 结果回调
+ * @param {*} options 配置选项
+ */
+function findPoiSearchByLatitude(lat, lng, searchListener, options = {}) {
+  loadMap(['AMap.PlaceSearch'])
+    .then(function () {
+      var PlaceSearch = new AMap.PlaceSearch(options)
+      PlaceSearch.searchNearBy('', [lng, lat], 300, function (status, result) {
+        searchListener(result)
+      })
+    })
+}
+
+/**
  * 路线规划
  * @param {*} container 容器id
  * @param {*} startLat  起始经度
@@ -235,13 +252,10 @@ function getDrivingSearch(container, startLat, startLng, endLat, endLng, mapOpti
  * @param {*} option 
  * @param {*} mapListener 
  */
-function renderMap(container, mapListener, option = {}) {
+function renderMap(container, mapListener, option = { zoom: 14 }) {
   loadMap()
     .then(succeed => {
-      var map = getMap(container, option = {} ? {
-        viewMode: '2D', //默认使用 2D 模式
-        zoom: 14, //地图级别
-      } : option);
+      var map = getMap(container, option);
       mapListener(map);
     })
 }
@@ -259,6 +273,18 @@ function appendMarker(postion = [], icon = 'https://webapi.amap.com/theme/v1.3/m
   });
 }
 
+/**
+ * 添加地图缩放控制器
+ * @param {*} map 
+ */
+function appendScaleControl(map) {
+  loadMap(['AMap.ToolBar'])
+    .then(() => {
+      // 在图面添加工具条控件, 工具条控件只有缩放功能
+      map.addControl(new AMap.ToolBar());
+    });
+}
+
 export default {
   locationOption,
   getCurrentCityLocation,
@@ -268,5 +294,7 @@ export default {
   getPoiSearch,
   getDrivingSearch,
   renderMap,
-  appendMarker
+  appendMarker,
+  appendScaleControl,
+  findPoiSearchByLatitude
 }
