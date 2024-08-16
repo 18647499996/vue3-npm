@@ -35,6 +35,10 @@ function getMap(container, option) {
   return new AMap.Map(container, option);
 }
 
+function getPolygonEditor(map, polygon) {
+  return new AMap.PolygonEditor(map, polygon);
+}
+
 /**
  * todo 获取当前定位
  */
@@ -237,6 +241,57 @@ function renderMap(container, mapListener, option = { zoom: 14 }) {
 }
 
 /**
+ * 构建多边形实例
+ * @param {*} path 
+ * @returns 
+ */
+function renderPolygon(path = [], strokeColor = '#FF33FF', fillColor = '#1791fc', strokeWeight = 6) {
+  return new AMap.Polygon({
+    // 多边形轮廓线的节点坐标数组。 支持 单个普通多边形({Array })，单个带孔多边形({Array<Array >})，多个带孔多边形({Array<Array<Array >>})
+    path: path,
+    // 线条颜色，使用16进制颜色代码赋值。默认值为#00D3FC
+    strokeColor: strokeColor,
+    // 轮廓线宽度
+    strokeWeight: strokeWeight,
+    // 轮廓线透明度，取值范围 [0,1] ，0表示完全透明，1表示不透明。默认为0.9
+    strokeOpacity: 0.2,
+    // 多边形填充透明度，取值范围 [0,1] ，0表示完全透明，1表示不透明。默认为0.5
+    fillOpacity: 0.4,
+    // 多边形填充颜色，使用16进制颜色代码赋值，如：#00B2D5
+    fillColor: fillColor,
+    // 多边形覆盖物的叠加顺序。地图上存在多个多边形覆盖物叠加时，通过该属性使级别较高的多边形覆盖物在上层显示
+    zIndex: 50,
+    // 是否将覆盖物的鼠标或touch等事件冒泡到地图上
+    bubble: true,
+  })
+}
+
+/**
+ * 构建多边形编辑器实例
+ * 常用函数：
+ * open()  // 开始编辑对象
+ * setAdsorbPolygons(list) // 设置吸附多边形
+ * clearAdsorbPolygons() // 清空所有的吸附多边形
+ * addAdsorbPolygons(list) // 添加吸附多边形
+ * removeAdsorbPolygons(list) // 删除吸附多边形
+ * close() // 停止编辑对象
+ * 常用事件：
+ * addnode // 增加一个节点时触发此事件 例如
+ * @param {*} map 
+ * @param {*} polygon 
+ * @returns 
+ */
+function renderPolygonEditor(map, polygonEditorListener, polygon = null) {
+  loadMap(['AMap.PolygonEditor'])
+    .then(succeed => {
+      var polygonEditor = getPolygonEditor(map, polygon)
+      polygonEditorListener(polygonEditor)
+    })
+}
+
+
+
+/**
  * 添加覆盖物坐标点
  * @param {array} postion 坐标点 [116.49, 39.9]
  * @param {*} icon 覆盖物图标 默认：https://webapi.amap.com/theme/v1.3/markers/n/mark_r.png
@@ -288,6 +343,17 @@ function appendStart(map, fun) {
   map.on('movestart', fun)
 }
 
+/**
+ * 多边形编辑器事件（ 添加节点 ）
+ * @param {*} polygonEditor 
+ * @param {*} fun 
+ */
+function appendPolygoNode(polygonEditor, fun) {
+  polygonEditor.on('addnode', function (event) {
+    fun(event)
+  })
+}
+
 
 export default {
   locationOption,
@@ -297,10 +363,13 @@ export default {
   getWeatherForecast,
   getDrivingSearch,
   renderMap,
+  renderPolygon,
+  renderPolygonEditor,
   appendMarker,
   appendScaleControl,
   appendMoveend,
   appendMove,
   appendStart,
+  appendPolygoNode,
   findPoiSearchByLatitude
 }
