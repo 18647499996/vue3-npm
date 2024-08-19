@@ -137,7 +137,7 @@ function getWeatherForecast(city, weatherForecastListener) {
 }
 
 /**
- * 根据经纬度查询周边信息
+ * 查询周边信息根据（ 经纬度 ）
  * @param {*} lat 纬度
  * @param {*} lng 经度
  * @param {*} searchListener 结果回调
@@ -162,6 +162,36 @@ function findPoiSearchByLatitude(lat, lng, searchListener, options = {}) {
           })
         }
       })
+    })
+}
+
+/**
+ * 查询周边信息根据（ 关键字 ）
+ * @param {*} lat 纬度
+ * @param {*} lng 经度
+ * @param {*} searchListener 结果回调
+ * @param {*} options 配置选项
+ */
+function findPoiSearchByKeyword(keyword, searchListener, options = {}) {
+  loadMap(['AMap.PlaceSearch', 'AMap.AutoComplete'])
+    .then(function () {
+      var placeSearch = new AMap.PlaceSearch(options);
+      placeSearch.search(keyword, function (status, result) {
+        if (status == 'complete') {
+          searchListener(result)
+        } else {
+          searchListener({
+            info: 'no_data',
+            poiList: {
+              pois: [],
+              count: 0,
+              pageIndex: 1,
+              pageSize: 10
+            }
+          })
+        }
+
+      });
     })
 }
 
@@ -371,5 +401,6 @@ export default {
   appendMove,
   appendStart,
   appendPolygoNode,
-  findPoiSearchByLatitude
+  findPoiSearchByLatitude,
+  findPoiSearchByKeyword
 }
