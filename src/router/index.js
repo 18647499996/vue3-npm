@@ -2,9 +2,10 @@ import { createRouter, createWebHistory } from 'vue-router';
 import { reactive, watch, h, shallowRef } from 'vue';
 import { HomeOutlined, UserOutlined, SettingOutlined } from '@ant-design/icons-vue';
 import MainActivity from '@/views/MainActivity.vue';
-import UserActivity from '@/views/UserActivity.vue';
+import VuetifyActivity from '@/views/VuetifyActivity.vue';
 import SysmentActivity from '@/views/SysmentActivity.vue';
 import IndexActivity from '@/views/IndexActivity.vue';
+import IonicActivity from '@/views/IonicActivity.vue';
 
 
 export const mapMenu = [
@@ -51,18 +52,18 @@ export const mapMenu = [
             {
                 path: '/user/info',
                 name: 'info',
-                component: UserActivity,
+                component: VuetifyActivity,
                 meta: {
-                    title: '数据统计',
+                    title: 'Vuetify',
                     keepAlive: false,
                 },
             },
             {
-                path: '/user/share',
-                name: 'share',
-                component: UserActivity,
+                path: '/user/ionic',
+                name: '用户',
+                component: VuetifyActivity,
                 meta: {
-                    title: '推荐',
+                    title: '用户',
                     keepAlive: false,
                 },
             }
@@ -81,7 +82,7 @@ export const mapMenu = [
             {
                 path: '/user/share',
                 name: 'share',
-                component: UserActivity,
+                component: VuetifyActivity,
                 meta: {
                     title: '推荐',
                     keepAlive: false,
@@ -89,7 +90,6 @@ export const mapMenu = [
             }
         ]
     }
-
 ]
 
 export const concatMapRoter = [
@@ -104,7 +104,14 @@ export const concatMapRoter = [
         // 设置路由懒加载
         children: mapMenu
     },
-
+    {
+        // 普通的设置一个普通的路由（顶级路由）
+        path: '/ionic',
+        name: 'ionic',
+        component: IonicActivity,
+        // 设置路由元信息，应用场景的话：主要就路由守卫里用的会多一点。该数据只能在这里声明，其他途径无法修改。
+        meta: { requiresXXX: true },
+    },
 ]
 
 // export const map = [
