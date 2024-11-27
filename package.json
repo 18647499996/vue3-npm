@@ -1,6 +1,6 @@
 {
   "name": "mayunf",
-  "version": "1.0.7",
+  "version": "1.0.8",
   "description": "Vue 3 开发工具包（ Axios、终端设备、Bus总线、会话存储 ）",
   "author": "18647499996@sina.cn",
   "main": "src/utils/index.js",
