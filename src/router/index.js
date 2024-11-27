@@ -6,6 +6,7 @@ import VuetifyActivity from '@/views/VuetifyActivity.vue';
 import SysmentActivity from '@/views/SysmentActivity.vue';
 import IndexActivity from '@/views/IndexActivity.vue';
 import IonicActivity from '@/views/IonicActivity.vue';
+import PageOfficeActivity from '@/views/PageOfficeActivity.vue';
 
 
 export const mapMenu = [
@@ -109,6 +110,14 @@ export const concatMapRoter = [
         path: '/ionic',
         name: 'ionic',
         component: IonicActivity,
+        // 设置路由元信息，应用场景的话：主要就路由守卫里用的会多一点。该数据只能在这里声明，其他途径无法修改。
+        meta: { requiresXXX: true },
+    },
+    {
+        // 普通的设置一个普通的路由（顶级路由）
+        path: '/pageoffice',
+        name: 'pageoffice',
+        component: PageOfficeActivity,
         // 设置路由元信息，应用场景的话：主要就路由守卫里用的会多一点。该数据只能在这里声明，其他途径无法修改。
         meta: { requiresXXX: true },
     },

@@ -29,6 +29,15 @@ module.exports = defineConfig({
         open: true, //项目运行成功后是否直接打开浏览器
         hot: true,//是否开启热加载
         // overlay: true //当出现编译错误或警告时，在浏览器中显示全屏覆盖。
+        proxy: {
+            '/api': {
+                target: 'http://121.52.223.207:809/api',
+                changeOrigin: true,
+                pathRewrite: {
+                    '^/api': ''
+                }
+            }
+        }
     },
 
     configureWebpack: {
