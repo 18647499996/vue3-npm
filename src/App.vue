@@ -16,31 +16,31 @@ export default {
   name: 'App',
   created() {
     console.log('终端设备：', DeviceManagerUtils.getDeviceManager());
-    StorageManagerUtils.saveLocalStorage('liudonghan', '刘冬涵');
-    console.log('本地存储：', StorageManagerUtils.getLocalStorage('liudonghan'));
-    AxiosManagerUtils
-      .createAxiosServer()
-      .baseApi('https://csapi1.xinfushenghuo.cn')
-      .addLogcatInterceptors()
-      .addParamsInterceptors(params => {
-        return params
-      })
-      .addCodeInterceptors(code => {
-        return code.data
-      })
-      .flatMap('get', '/apiindex/get-navigation-location?', { is_index: 1 })
-      .then(suucceed => {
+    // StorageManagerUtils.saveLocalStorage('liudonghan', '刘冬涵');
+    // console.log('本地存储：', StorageManagerUtils.getLocalStorage('liudonghan'));
+    // AxiosManagerUtils
+    //   .createAxiosServer()
+    //   .baseApi('https://csapi1.xinfushenghuo.cn')
+    //   .addLogcatInterceptors()
+    //   .addParamsInterceptors(params => {
+    //     return params
+    //   })
+    //   .addCodeInterceptors(code => {
+    //     return code.data
+    //   })
+    //   .flatMap('get', '/apiindex/get-navigation-location?', { is_index: 1 })
+    //   .then(suucceed => {
 
-      })
-      .catch(error => {
+    //   })
+    //   .catch(error => {
 
-      })
-    EventBusManagerUtils.register('TAG', callback => {
-      console.log('观察者模式监听：', callback);
-    })
+    //   })
+    // EventBusManagerUtils.register('TAG', callback => {
+    //   console.log('观察者模式监听：', callback);
+    // })
 
-    EventBusManagerUtils.post('TAG', '发送了一条数据');
-    NotificationManagerUtils.applyNotificationPermissionDialog('这是一条通知标题','通知栏内容',0)
+    // EventBusManagerUtils.post('TAG', '发送了一条数据');
+    // NotificationManagerUtils.applyNotificationPermissionDialog('这是一条通知标题','通知栏内容',0)
   }
 
 }

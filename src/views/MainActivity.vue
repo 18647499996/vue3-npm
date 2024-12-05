@@ -33,21 +33,35 @@ export default {
         }
     },
     created() {
-        http.createAxiosServer()
-            .baseApi('/api/')
-            .addHeaders({
-                // todo 根据服务器业务需求配置公共请求头
-                'Authorization': 'Bearer eyJhbGciOiJSUzI1NiIsImtpZCI6IjNDMkYzMkQ1N0RBOTBGQzM5N0QwQjgyMTNFRjFFOUMyIiwidHlwIjoiYXQrand0In0.eyJuYmYiOjE3MzI2MTI3NTcsImV4cCI6MTgxOTAxMjc1NywiaXNzIjoiaHR0cHM6Ly9sb2dpbi5sYXd4cC5jb20iLCJjbGllbnRfaWQiOiJhcHAiLCJzdWIiOiI3MThfaXN3ZWJvYTpUcnVlX2lzd2VzYWxlOkZhbHNlX2lzYWdlbnQ6RmFsc2UiLCJhdXRoX3RpbWUiOjE3MzI2MTI3NTcsImlkcCI6ImxvY2FsIiwiVXNlcklkIjoiMjEwMjk2MTExMCIsIm5hbWUiOiIxODY0NzQ5OTk5NiIsImdpdmVuX25hbWUiOiLliJjlhqzmtrUiLCJlbWFpbCI6ImxpdWRvbmdoYW5AbGF3eHAuY29tIiwianRpIjoiOTI3MEE2OEE0ODM5ODNCNTdGMUVBQkI4MDE0NUE4QTgiLCJpYXQiOjE3MzI2MTI3NTcsInNjb3BlIjpbIm9wZW5pZCIsInByb2ZpbGUiLCJvZmZsaW5lX2FjY2VzcyJdLCJhbXIiOlsiY3VzdG9tIl19.2toj2-Z-vxVC1UfrsxzEp_L2C9tdwXw2vfiq7UT3_avDCnv5Q4nvT8q8kXQKFETEogUVLigvQhlqyzXqrt3dk0zQcbhvcvZ5_wKzfkHumwTA-tRsskUHAMHoWYAcwJlg-ME4zmvoHDyYOLcqwWSwkJ-_8z_EQH7Q_444qCYkFLJx8pJqo98QEDaWwkGTffnq3BjBDBqoloaBTfEp8t3OJbpsKbMhNYGW3QGIphWjSbskPJHWUjfZpVnzNyTEmSo6Oi4f4L91N1iThHlRStNr3fWYK3x2aYR3Uk2f9riKRbTrw5QK8WgSXpo0L6SbdAE8zuZ1cGmFVGYgjqnpCGcT7g'
+        // http.createAxiosServer()
+        //     .baseApi('/api/')
+        //     .addHeaders({
+        //         // todo 根据服务器业务需求配置公共请求头
+        //         'Authorization': 'Bearer eyJhbGciOiJSUzI1NiIsImtpZCI6IjNDMkYzMkQ1N0RBOTBGQzM5N0QwQjgyMTNFRjFFOUMyIiwidHlwIjoiYXQrand0In0.eyJuYmYiOjE3MzI2MTI3NTcsImV4cCI6MTgxOTAxMjc1NywiaXNzIjoiaHR0cHM6Ly9sb2dpbi5sYXd4cC5jb20iLCJjbGllbnRfaWQiOiJhcHAiLCJzdWIiOiI3MThfaXN3ZWJvYTpUcnVlX2lzd2VzYWxlOkZhbHNlX2lzYWdlbnQ6RmFsc2UiLCJhdXRoX3RpbWUiOjE3MzI2MTI3NTcsImlkcCI6ImxvY2FsIiwiVXNlcklkIjoiMjEwMjk2MTExMCIsIm5hbWUiOiIxODY0NzQ5OTk5NiIsImdpdmVuX25hbWUiOiLliJjlhqzmtrUiLCJlbWFpbCI6ImxpdWRvbmdoYW5AbGF3eHAuY29tIiwianRpIjoiOTI3MEE2OEE0ODM5ODNCNTdGMUVBQkI4MDE0NUE4QTgiLCJpYXQiOjE3MzI2MTI3NTcsInNjb3BlIjpbIm9wZW5pZCIsInByb2ZpbGUiLCJvZmZsaW5lX2FjY2VzcyJdLCJhbXIiOlsiY3VzdG9tIl19.2toj2-Z-vxVC1UfrsxzEp_L2C9tdwXw2vfiq7UT3_avDCnv5Q4nvT8q8kXQKFETEogUVLigvQhlqyzXqrt3dk0zQcbhvcvZ5_wKzfkHumwTA-tRsskUHAMHoWYAcwJlg-ME4zmvoHDyYOLcqwWSwkJ-_8z_EQH7Q_444qCYkFLJx8pJqo98QEDaWwkGTffnq3BjBDBqoloaBTfEp8t3OJbpsKbMhNYGW3QGIphWjSbskPJHWUjfZpVnzNyTEmSo6Oi4f4L91N1iThHlRStNr3fWYK3x2aYR3Uk2f9riKRbTrw5QK8WgSXpo0L6SbdAE8zuZ1cGmFVGYgjqnpCGcT7g'
+        //     })
+        //     .addLogcatInterceptors()
+        //     .addParamsInterceptors(params => {
+        //         if (params.loading) {
+        //             message.loading('加载中..', 0);
+        //         }
+        //         return params
+        //     })
+        //     .put('InvokeInfoMaintenance/DeleteCustomeInfor', [5])
+        http.createBlobAxiosServer()
+            .baseApi('')
+            .addBlobInterceptors()
+            .pdf('pdf下载')
+            .downloadProgressListener(listener => {
+                console.log('~~~~~~~下载进度~~~~', listener)
             })
-            .addLogcatInterceptors()
-            .addParamsInterceptors(params => {
-                if (params.loading) {
-                    message.loading('加载中..', 0);
-                }
-                return params
+            .download(true)
+            .get("https://files.lawxp.com:443/invoice/24997000006971942591_20241203093757.pdf?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=lawxp%2F20241203%2Fus-east-1%2Fs3%2Faws4_request&X-Amz-Date=20241203T093957Z&X-Amz-Expires=604800&X-Amz-SignedHeaders=host&X-Amz-Signature=6af920072b5af329d2aea8e0bf3fdef1d5153a88bdf154157f60eb1fcd8d0ac1")
+            .then(succeed => {
+                console.log('pdf文件', succeed)
             })
-            .put('InvokeInfoMaintenance/DeleteCustomeInfor', [5])
+            .catch(error => {
 
+            })
         // http.createBlobAxiosServer()
         //     .baseApi('http://vd3.bdstatic.com/')
         //     .addBlobInterceptors()
@@ -62,11 +76,11 @@ export default {
         //     .catch(error => {
 
         //     })
-        LocationManagerUtils.locationOption.mapKey = 'c2868746f6d0d525fc35b1f377e683c2';
-        LocationManagerUtils.locationOption.mapSecurityCode = '6a5a69a56b383204455176e1c99c1f75';
-        LocationManagerUtils.getCurrentCityLocation(succeed => {
-            console.log('~~~~~~~~~~~~~~', succeed)
-        })
+        // LocationManagerUtils.locationOption.mapKey = 'c2868746f6d0d525fc35b1f377e683c2';
+        // LocationManagerUtils.locationOption.mapSecurityCode = '6a5a69a56b383204455176e1c99c1f75';
+        // LocationManagerUtils.getCurrentCityLocation(succeed => {
+        // console.log('~~~~~~~~~~~~~~', succeed)
+        // })
     },
 
     methods: {

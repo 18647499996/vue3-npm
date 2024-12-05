@@ -123,10 +123,20 @@ export function xls(fileName) {
 /**
  * todo 视频格式
  * @param fileName
- * @return {xls}
+ * @return {video}
  */
 export function video(fileName) {
   axiosManager.defaults.mimeType = 'video/mp4'
+  axiosManager.defaults.fileName = fileName
+  return this
+}
+
+/**
+ * todo PDF格式
+ * @param {*} fileName 
+ */
+export function pdf(fileName) {
+  axiosManager.defaults.mimeType = 'application/pdf'
   axiosManager.defaults.fileName = fileName
   return this
 }
@@ -211,6 +221,8 @@ export function addBlobInterceptors() {
         return getXls(config)
       case 'video/mp4':
         return getVideo(config)
+      case 'application/pdf':
+        return getPdf(config)
       default:
         return getXls(config)
     }
@@ -246,6 +258,25 @@ export function getVideo(config) {
     link.href = window.URL.createObjectURL(blob)
     link.download = config['config']['fileName'] === undefined || '' === config['config']['fileName'] ? new Date().getTime() + '.mp4' : config['config']['fileName'] + '.mp4'
     link.click()
+  }
+  return blob
+}
+
+/**
+ * 获取Pdf下载blob
+ * @param {*} config 
+ * @returns 
+ */
+export function getPdf(config) {
+  let blob = new Blob([config.data], { type: 'application/pdf;charset-UTF-8' })
+  if (config['config']['download']) {
+    let link = document.createElement('a')
+    link.href = window.URL.createObjectURL(blob)
+    link.download = config['config']['fileName'] === undefined || '' === config['config']['fileName'] ? new Date().getTime() + '.pdf' : config['config']['fileName'] + '.pdf'
+    document.body.appendChild(link);
+    link.click()
+    link.remove();
+    window.URL.revokeObjectURL(link.href);
   }
   return blob
 }
@@ -363,6 +394,7 @@ export default {
   uploadProgressListener,
   xls,
   video,
+  pdf,
   transformSchedulers,
   addLogcatInterceptors,
   addParamsInterceptors,
