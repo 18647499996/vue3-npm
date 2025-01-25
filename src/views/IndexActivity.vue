@@ -22,6 +22,7 @@
 
 <script>
 import LocationManagerUtils from '@/utils/LocationManagerUtils';
+import StorageManagerUtils from '@/utils/StorageManagerUtils';
 
 
 
@@ -48,13 +49,15 @@ export default {
     },
 
     mounted() {
-        LocationManagerUtils.renderMap('container', map => {
-            this.mapview = map;
-            this.polygon = LocationManagerUtils.renderPolygon()
-            this.mapview.add(this.polygon);
-            LocationManagerUtils.appendMoveend(map, this.handleMoveendChange)
-            LocationManagerUtils.appendScaleControl(map);
-        })
+        StorageManagerUtils.saveCookies('ssssss','safdfsdfsdffsd','30s')
+        console.log('获取cookies：',StorageManagerUtils.getCookies('ssssss'))
+        // LocationManagerUtils.renderMap('container', map => {
+        //     this.mapview = map;
+        //     this.polygon = LocationManagerUtils.renderPolygon()
+        //     this.mapview.add(this.polygon);
+        //     LocationManagerUtils.appendMoveend(map, this.handleMoveendChange)
+        //     LocationManagerUtils.appendScaleControl(map);
+        // })
     },
 
     methods: {

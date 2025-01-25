@@ -1,40 +1,49 @@
-import Cookies from 'js-cookie'
+// import Cookies from 'js-cookie'
+import Cookies from 'vue-cookies';
+
 
 /**
- * 保存cookies
- * @param key 键
- * @param value 值
+ * 保存cookies // TODO 注：cookies的名称key不能设置为以下关键字:['expires'，'max-age'，'path'，'domain'，'secure']
+ * @param {•} key 键
+ * @param {*} value 值 
+ * @param {•} [expires=null] 过期时间（ 默认：1天 ）
+ * y:年（ 例如：'3y' 3年后过期 ）
+ * m:月（ 例如：'4m' 4个月后过期 ）
+ * d:日（ 例如：'7d' 7天后过期 ）
+ * h:时（ 例如：'1h' 1小时后过期 ）
+ * min:分 （ 例如：'30min' 30分钟后过期 ）
+ * s:秒（ 例如：'10s' 10秒钟后过期 ）
+ * @param {*} [path=null] 设置路由地址
+ * 
  */
-export function saveCookies(key, value) {
-  Cookies.set(key, value)
+export function saveCookies(key, value, expires = null, path = null) {
+  Cookies.set(key, value, expires, path)
 }
 
 /**
- * todo 保存Cookies有效期
- * @param key 键
- * @param value 值
- * @param expires 有效期
- */
-export function saveCookiesExpires(key, value, expires) {
-  Cookies.set(key, value, { expires: expires })
-}
-
-/**
- * todo 可以通过配置path,为当前页创建有效期的cookie
- * @param key
- * @param vale
- * @param expires
- * @param path
- */
-export function saveCookiesPath(key, vale, expires, path) {
-  Cookies.set(key, vale, { expires: expires, path: path })
-}
-
-/**
- * todo 清除Cookies
+ * 清除Cookies
+ * @param {*} key 
  */
 export function removeCookies(key) {
   Cookies.remove(key)
+}
+
+/**
+ * 获取Cookies
+ * @param key
+ * @return {*}
+ */
+export function getCookies(key) {
+  return Cookies.get(key)
+}
+
+/**
+ * 是否包含Cookies key
+ * @param {*} key 
+ * @returns 
+ */
+export function isCookiesKey(key){
+  return Cookies.isKey(key)
 }
 
 /**
@@ -108,28 +117,8 @@ export function getSessionStorage(key) {
   return window.sessionStorage.getItem(key)
 }
 
-/**
- * todo 获取Cookies
- * @param key
- * @return {*}
- */
-export function getCookies(key) {
-  return Cookies.get(key)
-}
-
-/**
- * todo 获取Cookies对象
- * @param key
- * @return {*}
- */
-export function getCookiesObject(key) {
-  return Cookies.getJSON(key)
-}
-
 export default {
   saveCookies,
-  saveCookiesExpires,
-  saveCookiesPath,
   saveLocalStorage,
   saveSessionStorage,
   removeCookies,
@@ -139,7 +128,7 @@ export default {
   removeAllSessionStorage,
   removeAll,
   getCookies,
+  isCookiesKey,
   getLocalStorage,
   getSessionStorage,
-  getCookiesObject
 }
