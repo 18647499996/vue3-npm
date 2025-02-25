@@ -29,10 +29,11 @@ const config = {
   // 文件下载回调方法
   onDownloadProgress: null,
   // 文件上传回调方法
-  onUploadProgress: null
+  onUploadProgress: null,
 }
 
 let axiosManager
+let pendingRequests = new Map()
 
 /**
  * todo 创建axios引用
@@ -78,6 +79,24 @@ export function loading(hasLoading) {
  */
 export function download(hasDownload) {
   axiosManager.defaults.download = hasDownload
+  return this
+}
+
+/**
+ * todo 是否设置取消请求
+ * @param {*} hasAbort 
+ */
+export function abort(hasAbort) {
+  axiosManager.defaults.abort = hasAbort
+  return this
+}
+
+/**
+ * 是否打印日志
+ * @param {*} hadLog 
+ */
+export function log(hadLog) {
+  axiosManager.defaults.log = hadLog
   return this
 }
 
@@ -170,7 +189,24 @@ export function addLogcatInterceptors() {
   let requestTime, responseTime
   axiosManager.interceptors.request.use(config => {
     requestTime = new Date().getTime()
-    console.warn('请求数据：', config.baseURL + config.url, config.method, config.method === 'get' ? config.params : config.data)
+    if (config.log) {
+      // TODO 请求前，打印日志
+      console.warn('请求数据：', config.baseURL + config.url, config.method, config.method === 'get' ? config.params : config.data)
+    }
+    if (config.abort) {
+      // TODO 设置取消重复请求 生成请求的唯一标识
+      const requestKey = `${config.method}-${config.url}`;
+      // 如果该请求已经存在，取消之前的请求
+      if (pendingRequests.has(requestKey)) {
+        const cancel = pendingRequests.get(requestKey);
+        cancel('请求被取消，因为有新的相同请求发出');
+        pendingRequests.delete(requestKey);
+      }
+      // 为当前请求创建取消令牌
+      const source = axiosServer.CancelToken.source();
+      config.cancelToken = source.token;
+      pendingRequests.set(requestKey, source.cancel);
+    }
     return config
   }, error => {
     return Promise.reject(error)
@@ -178,7 +214,15 @@ export function addLogcatInterceptors() {
   // 响应拦截
   axiosManager.interceptors.response.use(config => {
     responseTime = new Date().getTime()
-    console.warn('返回数据：', config.request.responseURL, (responseTime - requestTime) + 's', config.data)
+    if (!config.log) {
+      // TODO 请求完成后，打印日志
+      console.warn('返回数据：', config.request.responseURL, (responseTime - requestTime) + 's', config.data)
+    }
+    if (config.abort) {
+      // TODO 请求完成后，从 pendingRequests 中移除该请求
+      const requestKey = `${res.config.method}-${res.config.url}`;
+      pendingRequests.delete(requestKey);
+    }
     return config
   }, error => {
     return Promise.reject(error)
@@ -303,8 +347,8 @@ export function put(url, data) {
 
 /**
  * todo get请求
- * @param url
- * @param params
+ * @param url 请求地址
+ * @param params 请求参数
  */
 export function get(url, params) {
   return axiosManager.get(url, { params: params })
@@ -390,6 +434,8 @@ export default {
   addHeaders,
   loading,
   download,
+  abort,
+  log,
   downloadProgressListener,
   uploadProgressListener,
   xls,

@@ -11,7 +11,8 @@
                 :style="{ padding: '12px', background: '#f5f5f5', minHeight: '750px' }">
                 <router-view></router-view>
             </a-layout-content>
-            <a-layout-footer :style="{ margin: '1px 8px', padding: '12px', background: '#fff', minHeight: '120px' }">
+            <a-layout-footer :style="{ margin: '1px 8px', padding: '12px', background: '#fff', minHeight: '120px' }"
+                @click="onclick">
                 sssss
             </a-layout-footer>
         </a-layout>
@@ -30,6 +31,7 @@ export default {
     data() {
         return {
             collapsed: false,
+            abortController: null
         }
     },
     created() {
@@ -47,45 +49,56 @@ export default {
         //         return params
         //     })
         //     .put('InvokeInfoMaintenance/DeleteCustomeInfor', [5])
-        http.createBlobAxiosServer()
-            .baseApi('')
-            .addBlobInterceptors()
-            .pdf('pdf下载')
-            .downloadProgressListener(listener => {
-                console.log('~~~~~~~下载进度~~~~', listener)
-            })
-            .download(true)
-            .get("https://files.lawxp.com:443/invoice/24997000006971942591_20241203093757.pdf?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=lawxp%2F20241203%2Fus-east-1%2Fs3%2Faws4_request&X-Amz-Date=20241203T093957Z&X-Amz-Expires=604800&X-Amz-SignedHeaders=host&X-Amz-Signature=6af920072b5af329d2aea8e0bf3fdef1d5153a88bdf154157f60eb1fcd8d0ac1")
-            .then(succeed => {
-                console.log('pdf文件', succeed)
-            })
-            .catch(error => {
-
-            })
         // http.createBlobAxiosServer()
         //     .baseApi('http://vd3.bdstatic.com/')
         //     .addBlobInterceptors()
         //     .video('axios视频下载')
+        //     .download(true)
         //     .downloadProgressListener(listener => {
         //         console.log('~~~~~~~下载进度~~~~', listener)
         //     })
-        //     .get('mda-qgu9r9c2v50anmm2/360p/h264/1722236069205668984/mda-qgu9r9c2v50anmm2.mp4')
+        //     .get('mda-qgu9r9c2v50anmm2/360p/h264/1722236069205668984/mda-qgu9r9c2v50anmm2.mp4', {}, this.abortController.signal)
         //     .then(succeed => {
         //         console.log('下载成功', succeed)
         //     })
         //     .catch(error => {
-
+        //         console.log('下载失败', error)
         //     })
-        // LocationManagerUtils.locationOption.mapKey = 'c2868746f6d0d525fc35b1f377e683c2';
-        // LocationManagerUtils.locationOption.mapSecurityCode = '6a5a69a56b383204455176e1c99c1f75';
-        // LocationManagerUtils.getCurrentCityLocation(succeed => {
-        // console.log('~~~~~~~~~~~~~~', succeed)
-        // })
+
     },
 
     methods: {
         onCollapsed(collapsed) {
             this.collapsed = collapsed
+        },
+
+        onclick() {
+            if (this.abortController) {
+                this.abortController.abort()
+            }
+            this.abortController = new AbortController()
+            http.createAxiosServer()
+                .baseApi('http://131.131.1.50:8848/')
+                .addHeaders({
+                    // todo 根据服务器业务需求配置公共请求头
+                    'Authorization': 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJCTSIsImF1ZCI6InNwb3Nwb25lIiwiaWF0IjoxNzMxMzA2ODg5LCJuYmYiOjE3MzEzMDY4ODksImV4cCI6MTczMzg5ODg4OSwiZGF0YSI6eyJhdmF0YXIiOiIiLCJjcmVhdGVfdGltZSI6IjIwMjQtMDQtMTcgMTg6MTQ6MDkiLCJlbWFpbCI6IjE4NjQ3NDk5OTk2QHNpbmEuY24iLCJpZCI6MiwibW9iaWxlIjoiMTg2NDc0OTk5OTYiLCJuaWNrbmFtZSI6IkJNXzA0MTcwNjE0MDk4MTIiLCJyb2xlIjoiT3duZXIiLCJzZXgiOjAsInNvdXJjZSI6ImFkbWluIiwic3RhdHVzIjowLCJ1cGRhdGVfdGltZSI6IjIwMjQtMDgtMDIgMTQ6MTQ6NTciLCJ1c2VybmFtZSI6ImxpdWRvbmdoYW4iLCJhcHBrZXkiOiI0YTFlYWJhY2Q1ZjEyMTMyNjE0MmNmYzA2OWViMjRjNyJ9fQ.QXxSKdxqHhYuSn3WOXCVTyjtefuYIzaogG78FCyzPz4',
+                    'appkey': '4a1eabacd5f121326142cfc069eb24c7'
+                })
+                .log(true) // 是否打印日志
+                .abort(true) // 是否开启请求取消
+                .addLogcatInterceptors() // 添加日志拦截器
+                .addCodeInterceptors(code => {
+                    return Promise.resolve(code.data)
+                }, error => {
+                    return Promise.reject(error)
+                })
+                .get('admin/recommend/findRecommendList?', { page: 1, limit: 10 })
+                .then(succeed => {
+                    console.log('下载成功', succeed)
+                })
+                .catch(error => {
+                    console.log('下载失败', error)
+                })
         }
     }
 
