@@ -214,7 +214,7 @@ export function addLogcatInterceptors() {
   // 响应拦截
   axiosManager.interceptors.response.use(config => {
     responseTime = new Date().getTime()
-    if (!config.log) {
+    if (config.log) {
       // TODO 请求完成后，打印日志
       console.warn('返回数据：', config.request.responseURL, (responseTime - requestTime) + 's', config.data)
     }
