@@ -214,13 +214,13 @@ export function addLogcatInterceptors() {
   // 响应拦截
   axiosManager.interceptors.response.use(config => {
     responseTime = new Date().getTime()
-    if (config.log) {
+    if (config.config.log) {
       // TODO 请求完成后，打印日志
       console.warn('返回数据：', config.request.responseURL, (responseTime - requestTime) + 's', config.data)
     }
-    if (config.abort) {
+    if (config.config.abort) {
       // TODO 请求完成后，从 pendingRequests 中移除该请求
-      const requestKey = `${res.config.method}-${res.config.url}`;
+      const requestKey = `${config.config.method}-${config.config.url}`;
       pendingRequests.delete(requestKey);
     }
     return config
