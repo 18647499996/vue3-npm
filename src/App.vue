@@ -6,6 +6,7 @@
 
 <script>
 import AxiosManagerUtils from './utils/AxiosManagerUtils';
+import ChatMessageUtils from './utils/ChatMessageUtils';
 import DeviceManagerUtils from './utils/DeviceManagerUtils';
 import EventBusManagerUtils from './utils/EventBusManagerUtils';
 import NotificationManagerUtils from './utils/NotificationManagerUtils';
@@ -41,6 +42,7 @@ export default {
 
     // EventBusManagerUtils.post('TAG', '发送了一条数据');
     // NotificationManagerUtils.applyNotificationPermissionDialog('这是一条通知标题','通知栏内容',0)
+    ChatMessageUtils.createTimChat();
   }
 
 }
