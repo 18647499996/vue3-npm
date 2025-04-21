@@ -48,7 +48,7 @@ function getCurrentLocation(geocoderListener) {
       new AMap.Geolocation(locationOption)
         .getCurrentPosition(function (status, result) {
           if (result.status === 0 && result.info === 'SUCCESS') {
-            getGeocoder('', result.position.lng, result.position.lat, geocoderListener)
+            getGeocoder(result.position.lng, result.position.lat, geocoderListener)
           } else {
             console.error('get location status：', result)
           }
@@ -82,7 +82,7 @@ function getCurrentCityLocation(currentCityLocationListener) {
  * @param lat
  * @param geocoderListener
  */
-function getGeocoder(city, lng, lat, geocoderListener) {
+function getGeocoder(lng, lat, geocoderListener, city = '') {
   const pos = [lng, lat]
   loadMap(['AMap.Geocoder'])
     .then(function () {
@@ -389,6 +389,7 @@ export default {
   locationOption,
   getCurrentCityLocation,
   getCurrentLocation,
+  getGeocoder,
   getWeatherLive,
   getWeatherForecast,
   getDrivingSearch,
