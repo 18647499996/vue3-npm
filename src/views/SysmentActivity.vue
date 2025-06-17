@@ -6,7 +6,7 @@
             allowClear />
         <a-checkbox-group v-model:value="item.childValue" :options="item.selectChildList" />
     </a-card>
-    <a-button type="primary" @click="onClickAdd" v-if="mergeGoalsList.length !== 5">新增</a-button>
+    <a-button class="add" type="primary" @click="onClickAdd" v-if="mergeGoalsList.length !== 5">新增</a-button>
     <a-button type="primary" danger @click="onClickRemove" v-if="mergeGoalsList.length !== 1">删除</a-button>
     <a-button type="primary" danger @click="onClickQuery">查询数据</a-button>
 </template>
@@ -500,7 +500,26 @@ export default {
 
     },
 
+    mounted() {
+        window.addEventListener('resize', this.handleResize);
+    },
+    beforeDestroy() {
+        window.removeEventListener('resize', this.handleResize);
+    },
+
     methods: {
+        handleResize(e) {
+            // 在这里你可以访问 window.innerWidth 和 window.innerHeight 来获取新的窗口尺寸
+            // 根据 windowWidth 调整样式或逻辑
+            if (e.target.innerWidth < 768) {
+                // 小屏设备处理
+                console.log('小屏设备', e.target.innerWidth);
+            } else {
+                // 大屏设备处理
+                console.log('大屏设备', e.target.innerWidth);
+            }
+        },
+
         handleSelectGoalsChange(e, items, postion) {
             console.log('~~~~~~~~~~~', items)
             items.selectChildList = []
@@ -547,4 +566,17 @@ export default {
 }
 </script>
 
-<style></style>
+<style lang="scss" scoped>
+
+@media only screen and (min-width:1200px) {
+    .add {
+        width: 100px;
+    }
+}
+
+@media only screen and (min-width:600px) and (max-width:1199px) {
+    .add {
+        width: 200px;
+    }
+}
+</style>

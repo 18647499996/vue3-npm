@@ -42,7 +42,7 @@ export default {
 
     // EventBusManagerUtils.post('TAG', '发送了一条数据');
     // NotificationManagerUtils.applyNotificationPermissionDialog('这是一条通知标题','通知栏内容',0)
-    ChatMessageUtils.createTimChat();
+    // ChatMessageUtils.createTimChat();
   }
 
 }
