@@ -7,6 +7,7 @@ import SysmentActivity from '@/views/SysmentActivity.vue';
 import IndexActivity from '@/views/IndexActivity.vue';
 import IonicActivity from '@/views/IonicActivity.vue';
 import PageOfficeActivity from '@/views/PageOfficeActivity.vue';
+import VueDraggablePlusActivity from '@/views/VueDraggablePlusActivity.vue';
 
 
 export const mapMenu = [
@@ -35,6 +36,15 @@ export const mapMenu = [
                 component: IndexActivity,
                 meta: {
                     title: '推荐',
+                    keepAlive: false,
+                },
+            },
+            {
+                path: '/index/draggable',
+                name: 'draggable',
+                component: VueDraggablePlusActivity,
+                meta: {
+                    title: '拖拽',
                     keepAlive: false,
                 },
             }
