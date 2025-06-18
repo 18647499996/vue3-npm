@@ -16,17 +16,18 @@
                 </a-flex>
             </div>
         </VueDraggable>
+
+        <VueJsonPretty :data="list"></VueJsonPretty>
     </div>
 </template>
 
 <script>
 import { VueDraggable } from 'vue-draggable-plus';
-import { jsonView } from 'vue-json-views'
-
+import VueJsonPretty from 'vue-json-pretty';
 
 export default {
     name: 'VueDraggablePlusActivity',
-    components: { VueDraggable, jsonView },
+    components: { VueDraggable, VueJsonPretty },
     data() {
         return {
             data: [

@@ -7,7 +7,7 @@ import Ionic from './plugin/ionic.js'
 import custom from './plugin/custom.js'
 
 
-const app = createApp(App).use(Antd).use(Vuetify).use(Ionic).use(Router).use(custom)
+const app = createApp(App).use(Antd).use(Vuetify).use(Ionic).use(Router).use(custom.VueJsonPretty).use(custom.VueDraggable)
 Router.isReady().then(() => {
     app.mount('#app')
 })
