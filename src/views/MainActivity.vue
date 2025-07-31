@@ -64,6 +64,17 @@ export default {
         //     .catch(error => {
         //         console.log('下载失败', error)
         //     })
+        http.createAxiosServer()
+            .baseApi('/')
+            .log(true)
+            .addLogcatInterceptors()
+            .del('https://218.245.6.135/ai-dev/api/v1/bot/bots/104',null)
+            .then(succeed => {
+
+            })
+            .catch(error => {
+
+            })
 
     },
 

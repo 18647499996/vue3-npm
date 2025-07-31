@@ -327,8 +327,8 @@ export function getPdf(config) {
 
 /**
  * todo post请求
- * @param url
- * @param data
+ * @param url 请求地址
+ * @param data 请求参数
  */
 export function post(url, data) {
   return axiosManager.post(url, data)
@@ -336,12 +336,22 @@ export function post(url, data) {
 
 /**
  * todo put请求
- * @param {*} url 
- * @param {*} data 
+ * @param {*} url 请求地址
+ * @param {*} data 请求参数
  * @returns 
  */
 export function put(url, data) {
   return axiosManager.put(url, data)
+}
+
+/**
+ * todo delete请求
+ * @param {*} url 请求地址
+ * @param {*} data 请求参数
+ * @returns 
+ */
+export function del(url, data) {
+  return axiosManager.delete(url, data)
 }
 
 
@@ -448,6 +458,7 @@ export default {
   addBlobInterceptors,
   post,
   put,
+  del,
   get,
   merger,
   form,
