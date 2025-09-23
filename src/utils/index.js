@@ -13,6 +13,7 @@ import EventBusManagerUtils from './EventBusManagerUtils'
 import LocationManagerUtils from './LocationManagerUtils'
 import ChatMessageUtils from './ChatMessageUtils'
 import ConstantManagerUtils from './ConstantManagerUtils'
+import FormatUtils from './FormatUtils'
 
 export default {
   NotificationManagerUtils,
@@ -22,5 +23,6 @@ export default {
   EventBusManagerUtils,
   LocationManagerUtils,
   ChatMessageUtils,
-  ConstantManagerUtils
+  ConstantManagerUtils,
+  FormatUtils
 }
