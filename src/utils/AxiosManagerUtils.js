@@ -350,8 +350,8 @@ export function put(url, data) {
  * @param {*} data 请求参数
  * @returns 
  */
-export function del(url, data) {
-  return axiosManager.delete(url, data)
+export function del(url, data = undefined) {
+  return axiosManager.delete(url, { data: data })
 }
 
 
