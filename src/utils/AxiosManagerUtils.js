@@ -369,10 +369,33 @@ export function get(url, params) {
  * @return {FormData}
  */
 export function form(url, data) {
+  // const formData = new FormData()
+  // for (const item in data) {
+  //   formData.append(item, data[item])
+  // }
+  // return post(url, formData)
   const formData = new FormData()
-  for (const item in data) {
-    formData.append(item, data[item])
+  for (const key in data) {
+    if (Object.prototype.hasOwnProperty.call(data, key)) {
+      const value = data[key]
+      // 过滤掉未定义或 null 的值，避免向后端发送 "undefined" 字符串
+      if (value === undefined || value === null) {
+        continue
+      }
+      // 判断是否为数组（处理文件数组或普通数组）
+      if (Array.isArray(value)) {
+        value.forEach((fileOrItem) => {
+          // 注意：有些后端框架（如 PHP）接收数组时，键名必须带上中括号，即 `${key}[]`
+          // 如果你们后端（如 ThinkPHP）要求带 []，请改为: formData.append(`${key}[]`, fileOrItem)
+          formData.append(key, fileOrItem)
+        })
+      } else {
+        // 普通字段或单个文件对象
+        formData.append(key, value)
+      }
+    }
   }
+
   return post(url, formData)
 }
 
