@@ -140,6 +140,17 @@ export function xls(fileName) {
 }
 
 /**
+ * todo excel格式（ xlsx ）
+ * @param fileName
+ * @return {xlsx}
+ */
+export function xlsx(fileName) {
+  axiosManager.defaults.mimeType = 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
+  axiosManager.defaults.fileName = fileName
+  return this
+}
+
+/**
  * todo 视频格式
  * @param fileName
  * @return {video}
@@ -263,6 +274,8 @@ export function addBlobInterceptors() {
     switch (config['config']['mimeType']) {
       case 'application/vnd.ms-excel':
         return getXls(config)
+      case 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet':
+        return getXlsx(config)
       case 'video/mp4':
         return getVideo(config)
       case 'application/pdf':
@@ -287,6 +300,24 @@ export function getXls(config) {
     link.href = window.URL.createObjectURL(blob)
     link.download = config['config']['fileName'] === undefined || '' === config['config']['fileName'] ? new Date().getTime() + '.xls' : config['config']['fileName'] + '.xls'
     link.click()
+  }
+  return blob
+}
+
+/**
+ * 获取xlsx表格下载blob
+ * @param config
+ */
+export function getXlsx(config) {
+  let blob = new Blob([config.data], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' })
+  if (config['config']['download']) {
+    let link = document.createElement('a')
+    link.href = window.URL.createObjectURL(blob)
+    link.download = config['config']['fileName'] === undefined || '' === config['config']['fileName'] ? new Date().getTime() + '.xlsx' : config['config']['fileName'] + '.xlsx'
+    document.body.appendChild(link)
+    link.click()
+    link.remove()
+    window.URL.revokeObjectURL(link.href)
   }
   return blob
 }
@@ -472,6 +503,7 @@ export default {
   downloadProgressListener,
   uploadProgressListener,
   xls,
+  xlsx,
   video,
   pdf,
   transformSchedulers,
@@ -479,6 +511,10 @@ export default {
   addParamsInterceptors,
   addCodeInterceptors,
   addBlobInterceptors,
+  getXls,
+  getXlsx,
+  getVideo,
+  getPdf,
   post,
   put,
   del,
