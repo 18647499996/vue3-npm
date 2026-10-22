@@ -14,6 +14,7 @@ export function applyNotificationPermissionDialog(title, content, icon) {
         console.log('弹出通知')
         const myNotification = new Notification(title, {
           body: content,
+          icon: icon,
           tag:'1',
           renotify:true,
           requireInteraction:true
