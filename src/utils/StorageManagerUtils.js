@@ -59,7 +59,7 @@ export function saveLocalStorage(key, value) {
  * todo 清除LocalStorage
  */
 export function removeLocalStorage(key) {
-  window.localStorage.remove(key)
+  window.localStorage.removeItem(key)
 }
 
 /**

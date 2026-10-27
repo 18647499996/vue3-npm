@@ -184,12 +184,20 @@ export function addHeaders(headers) {
  * todo 转换请求数据结果
  * @param transformResponseListener
  */
-export function transformSchedulers(transformResponseListener) {
+export function transform(transformResponseListener) {
   axiosManager.interceptors.response.use(config => {
     // todo 避免重复引用数据转换，保证数据结构唯一性（ 只返回服务器数据结构 ）
     return transformResponseListener(undefined === config.config ? config : config.data)
   })
   return this
+}
+
+/**
+ * @deprecated 名称过长已废弃，请改用 transform，保留别名以兼容历史项目
+ * @param transformResponseListener
+ */
+export function transformSchedulers(transformResponseListener) {
+  return transform(transformResponseListener)
 }
 
 /**
@@ -366,23 +374,64 @@ export function post(url, data) {
 }
 
 /**
- * todo put请求
+ * todo 解析请求地址和参数，put、patch、del 共用，支持四种调用方式：
+ *   (url)            id 已直接拼接在 url 路径中，无请求参数
+ *   (url, data)      id 已直接拼接在 url 路径中，data 为请求参数（对象/FormData 等）
+ *   (url, id)        id 单独传入（数字或字符串），自动拼接为 url/id，无请求参数
+ *   (url, id, data)  id 单独传入，自动拼接为 url/id
+ * 注意：第二个参数为 number/string 时按 id 处理并拼接到 url，为对象等其他类型时按请求参数处理。
  * @param {*} url 请求地址
+ * @param {*} id 资源id 或请求参数（数字/字符串视为 id）
  * @param {*} data 请求参数
- * @returns 
+ * @return {{url: *, data: *}}
  */
-export function put(url, data) {
-  return axiosManager.put(url, data)
+function resolveRequest(url, id, data) {
+  // (url)：未传其他参数，id 已直接拼接在 url 路径中
+  if (id === undefined) {
+    return { url, data: undefined }
+  }
+  // (url, id) 或 (url, id, data)：数字或字符串视为资源id，自动拼接到 url，去掉末尾多余的 "/" 避免出现 "//"
+  if (typeof id === 'number' || typeof id === 'string') {
+    return { url: `${url.replace(/\/$/, '')}/${id}`, data }
+  }
+  // (url, data)：id 已在 url 路径中，第二个参数为请求参数
+  return { url, data: id }
 }
 
 /**
- * todo delete请求
+ * todo put请求，支持四种调用方式：put(url)、put(url, data)、put(url, id)、put(url, id, data)
  * @param {*} url 请求地址
+ * @param {*} id 资源id（与 data 同时传入时生效，自动拼接为 url/id）
  * @param {*} data 请求参数
- * @returns 
+ * @returns
  */
-export function del(url, data = undefined) {
-  return axiosManager.delete(url, { data: data })
+export function put(url, id, data) {
+  const { url: requestUrl, data: requestData } = resolveRequest(url, id, data)
+  return axiosManager.put(requestUrl, requestData)
+}
+
+/**
+ * todo patch请求，支持四种调用方式：patch(url)、patch(url, data)、patch(url, id)、patch(url, id, data)
+ * @param {*} url 请求地址
+ * @param {*} id 资源id（与 data 同时传入时生效，自动拼接为 url/id）
+ * @param {*} data 请求参数
+ * @returns
+ */
+export function patch(url, id, data) {
+  const { url: requestUrl, data: requestData } = resolveRequest(url, id, data)
+  return axiosManager.patch(requestUrl, requestData)
+}
+
+/**
+ * todo delete请求，支持四种调用方式：del(url)、del(url, data)、del(url, id)、del(url, id, data)
+ * @param {*} url 请求地址
+ * @param {*} id 资源id（与 data 同时传入时生效，自动拼接为 url/id）
+ * @param {*} data 请求参数
+ * @returns
+ */
+export function del(url, id, data) {
+  const { url: requestUrl, data: requestData } = resolveRequest(url, id, data)
+  return axiosManager.delete(requestUrl, { data: requestData })
 }
 
 
@@ -448,37 +497,53 @@ export function merger(mergerRequest, onSucceed, onError) {
 
 /**
  * todo 链式请求 Axios + Promise
- * @param method 请求类型 post、get、form
+ * @param method 请求类型 post、get、form、put、patch、del
  * @param url 请求地址
- * @param data 请求参数
+ * @param args 请求参数（ put/patch/del 可传 id 或 id, data，即 flatMap('del', url, id) ）
  * @return {Promise<unknown>}
  */
-export function flatMap(method, url, data) {
+export function flatMap(method, url, ...args) {
   return new Promise((resolve, reject) => {
     switch (method) {
       case 'post':
-        return post(url, data)
+        return post(url, ...args)
           .then(succeed => {
             resolve(succeed)
           }).catch(error => {
             reject(error)
           })
       case 'get':
-        return get(url, data)
+        return get(url, ...args)
           .then(succeed => {
             resolve(succeed)
           }).catch(error => {
             reject(error)
           })
       case 'form':
-        return form(url, data)
+        return form(url, ...args)
           .then(succeed => {
             resolve(succeed)
           }).catch(error => {
             reject(error)
           })
       case 'put':
-        return put(url, data)
+        return put(url, ...args)
+          .then(succeed => {
+            resolve(succeed)
+          })
+          .catch(error => {
+            reject(error)
+          })
+      case 'patch':
+        return patch(url, ...args)
+          .then(succeed => {
+            resolve(succeed)
+          })
+          .catch(error => {
+            reject(error)
+          })
+      case 'del':
+        return del(url, ...args)
           .then(succeed => {
             resolve(succeed)
           })
@@ -506,7 +571,9 @@ export default {
   xlsx,
   video,
   pdf,
-  transformSchedulers,
+  transform,
+  // 旧名别名，兼容历史项目
+  transformSchedulers: transform,
   addLogcatInterceptors,
   addParamsInterceptors,
   addCodeInterceptors,
@@ -517,6 +584,7 @@ export default {
   getPdf,
   post,
   put,
+  patch,
   del,
   get,
   merger,
